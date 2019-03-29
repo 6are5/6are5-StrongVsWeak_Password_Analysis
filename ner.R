@@ -26,11 +26,11 @@ omniTagger <- function(
   stri_list2matrix(ret)
 }
 
-# Performs NER in batches, pushing features to disk
+# Performs NER in batches, pushing features to disk in tab delimited file
 tags_to_disk <- function(
   file_in = '~/Downloads/breachcompilation.txt', 
   file_out = '~/develop_foss/pw-analysis/data/ner.features',
-  batch_size = 10**5,
+  batch_size = 10**6,
   tag_system = omniTagger,
   log_level = 10,
   log_location = '~/develop_foss/pw-analysis/data/ner.log',
@@ -52,8 +52,7 @@ tags_to_disk <- function(
     loginfo(paste('Buffer read. Size:', sz, 'Counter:', counter))
     buffer <- tag_system(buffer)
     loginfo('Buffer tagged.')
-    logdebug('Head of tags\n', head(buffer))
-    readr::write_lines(buffer, path = file_out, append = TRUE)
+    write.table(x = buffer, file = file_out, append = TRUE, sep = "\t", row.names = FALSE, col.names = FALSE)
     loginfo(paste('Buffer written to', file_out))
   }
 }
